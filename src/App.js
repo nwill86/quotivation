@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Loader } from "react-feather";
+import FavoriteQuotes from "./components/quotes/FavoriteQuotes";
 import Quotes from "./components/quotes/Quotes";
 import "./App.css";
+
 
 function App() {
 
@@ -11,6 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState("All");
   const [favoriteQuotes, setFavoriteQuotes] = useState([]);
+
   const maxFaves = 3;
 
   const quotesUrl =
@@ -47,43 +50,43 @@ function App() {
     const alreadyFavorite = favoriteQuotes.find((favorite) => favorite.id === selectedQuote.id);
 
     if (alreadyFavorite) {
-      console.log("Quote already in favorites!");
-    } else if (favoriteQuotes.length < maxFaves) {
-      setFavoriteQuotes([...favoriteQuotes, selectedQuote]);
+      removeFromFavorites(quoteId);
+    } else {
+      if (favoriteQuotes.length < maxFaves) {
       console.log("Added to Favorites!");
+      setFavoriteQuotes([...favoriteQuotes, selectedQuote]);
     } else {
       console.log("Max number of quotes reached. Please delete one to add a new one.")
     }
-  };
+  }
+};
 
+const removeFromFavorites = (quoteId) => {
+  const updatedFavorites = favoriteQuotes.filter((quote) => quote.id !== quoteId);
+  setFavoriteQuotes(updatedFavorites);
+};
 
+return (
+  <div className='App'>
+    <Header />
+    <main>
+      <FavoriteQuotes favoriteQuotes={favoriteQuotes} maxFaves={maxFaves} removeFromFavorites={removeFromFavorites} />
+      {loading ? (
+        <Loader />
+        ) : (
+        <Quotes
+          categories={categories}
+          category={category}
+          handleCategoryChange={handleCategoryChange}
+          filteredQuotes={filteredQuotes}
+          addToFavorites={addToFavorites}
+          favoriteQuotes={favoriteQuotes}
+        />
+      )}
+    </main>
+    <Footer />
+  </div>
+);
+        }
 
-  return (
-    <div className='App'>
-      <Header />
-      <main>
-        <section className="favorite-quotes">
-          <div className="wrapper quotes">
-            <h3>Top 3 favorite quotes</h3>
-            {favoriteQuotes.length > 0 && JSON.stringify(favoriteQuotes)}
-          </div>
-          <div className="favorite-quotes-description">
-            <p>You can add up to three favorites by selecting from the options below.<br />Once you choose, they will appear here.</p>
-          </div>
-        </section>
-        {loading ? (<Loader />) : (
-          <Quotes
-            quotes={quotes}
-            categories={categories}
-            category={category}
-            handleCategoryChange={handleCategoryChange}
-            filteredQuotes={filteredQuotes}
-            addToFavorites={addToFavorites}
-          />
-        )}
-      </main>
-      <Footer />
-    </div>
-  );
-}
 export default App;
