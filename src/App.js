@@ -8,19 +8,22 @@ import "./App.css";
 function App() {
 
   const [quotes, setQuotes] = useState([]);
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState("All");
 
   const quotesUrl =
     "https://gist.githubusercontent.com/skillcrush-curriculum/6365d193df80174943f6664c7c6dbadf/raw/1f1e06df2f4fc3c2ef4c30a3a4010149f270c0e0/quotes.js";
 
-    const fetchQuotes = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(quotesUrl);
-        const results = await response.json();
-        setQuotes(results);
-      } catch (error) {
-        console.log("There was an error", error);
+  const categories = ["All", "Leadership", "Empathy", "Motivation", "Learning", "Success", "Empowerment"];
+
+  const fetchQuotes = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(quotesUrl);
+      const results = await response.json();
+      setQuotes(results);
+    } catch (error) {
+      console.log("There was an error", error);
     }
     setLoading(false);
   };
@@ -30,15 +33,28 @@ const [loading, setLoading] = useState(false);
 
   }, []);
 
-  
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+  };
+
+  const filteredQuotes = category !== "All" ? quotes.filter((quote) => quote.categories.includes(category)) : quotes;
+
   return (
     <div className='App'>
       <Header />
       <main>
-        {loading ? <Loader /> : <Quotes quotes={quotes} />}
+        {loading ? (<Loader />) : ( 
+          <Quotes
+            quotes={quotes}
+            categories={categories}
+            category={category} 
+            handleCategoryChange={handleCategoryChange}
+            filteredQuotes={filteredQuotes}
+            />
+            )}
       </main>
       <Footer />
     </div>
-);
-  }
+  );
+}
 export default App;
