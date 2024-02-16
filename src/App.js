@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Message from "./components/Message";
 import { Loader } from "react-feather";
 import FavoriteQuotes from "./components/quotes/FavoriteQuotes";
 import Quotes from "./components/quotes/Quotes";
@@ -13,6 +14,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState("All");
   const [favoriteQuotes, setFavoriteQuotes] = useState([]);
+  const [messageText, setMessageText] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
   const maxFaves = 3;
 
@@ -50,43 +53,52 @@ function App() {
     const alreadyFavorite = favoriteQuotes.find((favorite) => favorite.id === selectedQuote.id);
 
     if (alreadyFavorite) {
+      setMessageText("Already in Favorites!");
+      setShowMessage(true);
       removeFromFavorites(quoteId);
     } else {
       if (favoriteQuotes.length < maxFaves) {
-      console.log("Added to Favorites!");
-      setFavoriteQuotes([...favoriteQuotes, selectedQuote]);
-    } else {
-      console.log("Max number of quotes reached. Please delete one to add a new one.")
+        setMessageText("Added to Favorites!");
+        setShowMessage(true);
+        setFavoriteQuotes([...favoriteQuotes, selectedQuote]);
+      } else {
+        setMessageText("Max number of quotes reached. Please delete one to add a new one.")
+        setShowMessage(true);
+      }
     }
-  }
-};
+  };
 
-const removeFromFavorites = (quoteId) => {
-  const updatedFavorites = favoriteQuotes.filter((quote) => quote.id !== quoteId);
-  setFavoriteQuotes(updatedFavorites);
-};
+const removeMessage = () => {
+  setShowMessage(false);
+}
 
-return (
-  <div className='App'>
-    <Header />
-    <main>
-      <FavoriteQuotes favoriteQuotes={favoriteQuotes} maxFaves={maxFaves} removeFromFavorites={removeFromFavorites} />
-      {loading ? (
-        <Loader />
+  const removeFromFavorites = (quoteId) => {
+    const updatedFavorites = favoriteQuotes.filter((quote) => quote.id !== quoteId);
+    setFavoriteQuotes(updatedFavorites);
+  };
+
+  return (
+    <div className='App'>
+      <Header />
+      { showMessage && <Message messageText={messageText} removeMessage={removeMessage} />}
+      <main>
+        <FavoriteQuotes favoriteQuotes={favoriteQuotes} maxFaves={maxFaves} removeFromFavorites={removeFromFavorites} />
+        {loading ? (
+          <Loader />
         ) : (
-        <Quotes
-          categories={categories}
-          category={category}
-          handleCategoryChange={handleCategoryChange}
-          filteredQuotes={filteredQuotes}
-          addToFavorites={addToFavorites}
-          favoriteQuotes={favoriteQuotes}
-        />
-      )}
-    </main>
-    <Footer />
-  </div>
-);
-        }
+          <Quotes
+            categories={categories}
+            category={category}
+            handleCategoryChange={handleCategoryChange}
+            filteredQuotes={filteredQuotes}
+            addToFavorites={addToFavorites}
+            favoriteQuotes={favoriteQuotes}
+          />
+        )}
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
 export default App;
