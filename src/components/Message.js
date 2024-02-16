@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useEffect } from  "react";
 
-function Message ({ messageText, removeMessage }) {
+function Message({ messageText, removeMessage }) {
+
+    useEffect(() => {
+       const messageTimout = setTimeout(() => {
+            removeMessage();
+        
+        }, 1500)
+
+        window.setTimeout(messageTimout);
+        return () => window.clearTimeout(messageTimout);
+
+        
+    },);
+
     return (
         <div className="message">
             <p>{messageText}</p>

@@ -9,7 +9,7 @@ function Quotes({ addToFavorites, filteredQuotes, category, categories, handleCa
             <div className='quotes wrapper'>
                <div className="category-header">
                 <h2>Pick your Favorite Quotes Below</h2>
-                <p>Browse through your collection of quotes</p>
+                <p>You have {filteredQuotes.length} {category !== "All" && category} {filteredQuotes.length === 1 ? "quote" : "quotes"}!</p>
                 <CategoryFrom category={category} categories={categories} handleCategoryChange={handleCategoryChange} />
                </div> 
 
