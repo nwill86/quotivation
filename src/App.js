@@ -57,8 +57,6 @@ window.localStorage.setItem("favoriteQuotes", JSON.stringify(favoriteQuotes))
     const alreadyFavorite = favoriteQuotes.find((favorite) => favorite.id === selectedQuote.id);
 
     if (alreadyFavorite) {
-      setMessageText("Already in Favorites!");
-      setShowMessage(true);
       removeFromFavorites(quoteId);
     } else {
       if (favoriteQuotes.length < maxFaves) {
